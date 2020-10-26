@@ -2,6 +2,8 @@
 PRE REQ: 
 TERRAFORM + ANSIBLE + AWS CLI installed
 
+ADD in to this directory your terraform KEY.pem File
+
 CHANGE IN TERRAFORM FILE TO YOUR KEY
   key_name = "YOUR_KEY"
   
