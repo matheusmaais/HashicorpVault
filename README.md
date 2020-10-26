@@ -26,6 +26,8 @@ The objective of this project is to automate the deployment of Hashicorp Vault u
   $ sudo su 
   $ sh vault/unseal.sh
 ```
+### Access URL
+ * http://IP:8200
 ### Destroy
  * Run in your local machine
  ```sh
