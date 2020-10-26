@@ -1,4 +1,4 @@
-# Deploy Hashicorp Vault with Terraform + Ansigle
+# Deploy Hashicorp Vault with Terraform + Ansible
 The objective of this project is to automate the deployment of Hashicorp Vault using the well-known DevOps tools: 
  * Terraform (to provision the infrastructure) 
  * Ansible to manage our configuration
