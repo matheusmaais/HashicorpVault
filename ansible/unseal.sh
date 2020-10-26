@@ -10,12 +10,12 @@ vault operator init > /home/ubuntu/vault/key.txt
 sleep 10
 export VAULT_ADDR="http://0.0.0.0:8200"
 echo "unseal 1"
-vault operator unseal $(grep 'Key 1:' key.txt | awk '{print $NF}')
+vault operator unseal $(grep 'Key 1:' /home/ubuntu/vault/key.txt | awk '{print $NF}')
 sleep 3
 echo "unseal 2"
-vault operator unseal $(grep 'Key 2:' key.txt | awk '{print $NF}')
+vault operator unseal $(grep 'Key 2:' /home/ubuntu/vault/key.txt | awk '{print $NF}')
 sleep 3
 echo "unseal 3"
-vault operator unseal $(grep 'Key 3:' key.txt | awk '{print $NF}')
+vault operator unseal $(grep 'Key 3:' /home/ubuntu/vault/key.txt | awk '{print $NF}')
 sleep 2
 vault status 
