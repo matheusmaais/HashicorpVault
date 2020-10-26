@@ -1,0 +1,231 @@
+---
+- hosts: vault-server
+  remote_user: ubuntu
+  become: yes 
+  tasks:
+  - name: Download GPG KEY
+    shell: curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - 
+
+  - name: Add Hashicorp Vault Repo
+    shell: apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+
+
+  - name: Install Vault
+    apt:
+      name: vault
+      update_cache: yes
+
+  - name: Create vault config directory
+    file: state=directory path=/home/ubuntu/vault/
+
+  - name: Copy vault config to server
+    copy: src=config.hcl dest=/home/ubuntu/vault/config.hcl
+
+  - name: Copy Unseal Script
+    copy: src=unseal.sh dest=/home/ubuntu/vault    
+  
+  
+#EXAMPLES
+
+
+
+  # - name: Initialize Vault
+  #   shell: sh /home/ubuntu/vault/initialize.sh
+
+  #- name: Unseal Vault
+  #  shell: sh /home/ubuntu/vault/unseal.sh
+  #  register: out
+  
+  #- debug: var=out.stdout_lines
+  
+  # - name: Start Vault
+  #   shell: nohup vault server -config=/home/ubuntu/vault/config.hcl & #terminal trava se não usar o nohup &
+
+  # - pause:
+  #     seconds: 10
+  
+  # - name: Export VAULT_ADDR 0.0.0.0:8200
+  #   shell:  &&  \
+  #          vault operator init > /home/ubuntu/vault/key.txt
+
+  #- name: Initialize and Store Unseal Keys
+  #  shell: vault operator init > /home/ubuntu/vault/key.txtterr
+
+  # - name: Unseal Vault
+  #   shell: sh /home/ubuntu/vault/unseal.sh
+
+# ansible hakase-testing -m shell -a 'df -h /dev/sda2' --become
+################################
+#Processo manual para deploy vault:
+  # curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - 
+  # apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+  # apt install vault -y
+  # mkdir /home/ubuntu/vault
+  # nano /home/ubuntu/vault/config.hcl
+  # nohup vault server -config=/home/ubuntu/vault/config.hcl &
+  # export VAULT_ADDR="http://0.0.0.0:8200"
+  # vault operator init > /home/ubuntu/vault/key.txt
+  # Unseal
+
+# config.hcl
+
+#   storage "file" {
+#   path = "/home/ubuntu/vault"
+# }
+
+# listener "tcp" {
+#   address     = "0.0.0.0:8200"
+#   tls_disable = 1
+# }
+# ui = true
+
+
+
+
+
+
+
+
+
+  # - name: Create vault config directory
+  #   file: state=directory path=/etc/vault/
+  #   become: true
+
+  # - name: Copy vault config to server
+  #   copy: src=config.hcl dest=./vault/
+  #   become: true
+
+  # - name: Copy vault service to server
+  #   copy: src=vault.service dest=/etc/systemd/system/vault.service
+  #   become: true    
+
+  # - name: Start vault service
+  #   systemd:
+  #     state: started
+  #     name: vault
+  #     daemon_reload: yes
+  #   become: true
+  
+  # - pause:
+  #     seconds: 15
+  
+  # - name: Initialize the vault
+  #   environment:
+  #     VAULT_ADDR: 'http://0.0.0.0:8200'
+  #   command: vault operator init
+  #   register: keys
+    
+  
+  # - name: Inicializando Vault
+  #   shell: vault server -dev -dev-listen-address=0.0.0.0:8200 & #-dev-root-token-id=giropops#
+  
+  # - name: Exportando VAULT_ADDR
+  #   shell: export VAULT_ADDR="http://0.0.0.0:8200"
+
+  # - name: Initialize the vault
+  #   shell: vault status
+
+  # - debug: msg="{{ keys }}"
+  
+
+  # - name: Parse output of vault init
+  #   set_fact:
+  #     vault_init_parsed: "{{ vault_init_results.stdout | from_json }}"
+  
+  # - name: Gravando Unseal keys
+  #   copy:
+  #     dest: "./unseal_key_{{ item.0 }}"
+  #     content: "{{ item.1}}"
+  #     with_indexed_items: "{{ vault_init_parsed.unseal_keys_hex }}"
+  #   delegate_to: localhost
+
+  # - name: Write root token to file
+  #   copy:
+  #     content: "{{ vault_init_parsed.root_token }}"
+  #     dest: "./rootkey"
+  #   delegate_to: localhost
+  
+
+
+  # - name: Executando Vault
+  #   shell:
+  #     cmd: export VAULT_ADDR='http://0.0.0.0:8200'
+  #     cmd: vault server -dev -dev-listen-address=0.0.0.0:8200 -dev-root-token-id=giropops &      
+  #     cmd: vault status
+      
+
+  # - name: Exportando Variavel VAULT_ADDR
+  #   shell:
+  #     cmd: export VAULT_ADDR=’0.0.0.0:8200’
+  #     cmd: vault status
+
+  # - name: Vault Status
+  #   shell:
+  #     cmd: vault status
+
+
+
+#  ( já vem unsealed, n precisa habilitar backend externo, usado para testes ) 
+
+#malau: pesquisar como capturar em arquivo TXT os tokens 
+# Anotar root token  e token id
+
+
+
+# malau: * utilizar um teste para validar se a resposta de vault status contem a string "true"   
+#vault status
+
+
+
+
+#vault server -dev -dev-listen-address=0.0.0.0:8200 -dev-root-token-id=giropops
+  # ( consegue acessar de fora, e troca o root token para giropops) 
+
+
+#Rodar export novamente mas usar o 0.0.0.0:8200
+
+#
+#/*  - name: Install unzip
+#     package:
+#       name: unzip
+#       update_cache: yes
+#     become: true
+
+#   - name: Download and install vault binary
+#     unarchive:
+#       src: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+#       dest: /usr/bin/
+#       remote_src: True
+#     become: true
+
+#   - name: Adicionado vault no Path
+
+#   - name: Create vault config directory
+#     file: state=directory path=/etc/opt/vault/
+#     become: true
+
+#   - name: Copy vault config to server
+#     copy: src=vaultconfig.hcl dest=/etc/opt/vault/
+#     become: true
+
+#   - name: Copy vault service to server
+#     copy: src=vault.service dest=/usr/lib/systemd/system/vault.service
+#     become: true
+
+#   - name: Start vault service
+#     systemd:
+#       state: started
+#       name: vault
+#       daemon_reload: yes
+#     become: true
+
+#   - pause:
+#       seconds: 15
+
+#   - name: Initialize the vault
+#     command: vault operator init
+#     register: keys
+#     environment:
+#       VAULT_ADDR: "http://127.0.0.1:8200"
+
+#   - debug: msg="{{ keys }}" */
