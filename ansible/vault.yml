@@ -3,12 +3,13 @@
   remote_user: ubuntu
   become: yes 
   tasks:
-  - name: Download GPG KEY
-    shell: curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - 
+  - name: Adicionando as chaves do repo Hashicorp
+    apt_key: 
+      url: https://apt.releases.hashicorp.com/gpg
+      state: present
 
   - name: Add Hashicorp Vault Repo
     shell: sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-
 
   - name: Install Vault
     apt:
