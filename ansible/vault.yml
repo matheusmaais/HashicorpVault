@@ -16,13 +16,44 @@
       name: vault
       update_cache: yes
 
-  - name: Create vault config directory
-    file: state=directory path=/home/ubuntu/vault/
+  - name: Stop Vault Service
+    service:
+      name: vault
+      state: stopped
 
   - name: Copy vault config to server
-    copy: src=config.hcl dest=/home/ubuntu/vault/config.hcl
+    copy: src=vault.hcl dest=/etc/vault.d/vault.hcl
+
+  - name: Start Vault Service
+    service:
+      name: vault
+      state: started
+      enabled: yes
+  
+  - name: Insert VAULT_ADDR in to /etc/environment
+    lineinfile:
+      path: /etc/environment
+      line: VAULT_ADDR="http://0.0.0.0:8200"
+
+  - name: Insert VAULT_ADDR in to /etc/profile
+    lineinfile:
+      path: /etc/profile
+      line: export VAULT_ADDR="http://0.0.0.0:8200"
+
+  - name: Reboot machine
+    reboot:
+      msg: "Reinicialização iniciada por Ansible"
 
   - name: Copy Unseal Script
-    copy: src=unseal.sh dest=/home/ubuntu/vault    
+    copy: src=unseal.sh dest=/etc/vault.d/ 
+  
+  - name: Unseal Vault
+    shell: sh /etc/vault.d/unseal.sh  
+
+  - name: Copy Keys to Local machine
+    fetch:
+      src: /etc/vault.d/key.txt
+      dest: .
+
   
   

@@ -19,15 +19,11 @@ The objective of this project is to automate the deployment of Hashicorp Vault u
    $ sh deploy.sh
 ```
  * Wait for Ansible to finish its execution
- * log in to the provisioned server, changing PATH_TO_YOUR_KEY.pem and the SERVER_IP
+ * The script will create a ./ansible/key.txt in your current directory, copy root key
 
-```sh
-  $ ssh -i PATH_TO_YOUR_KEY_FILE.PEM ubuntu@SERVER_IP
-  $ sudo su 
-  $ sh vault/unseal.sh
-```
 ### Access URL
  * http://IP:8200
+ * login with your root key
 ### Destroy
  * Run in your local machine
  ```sh

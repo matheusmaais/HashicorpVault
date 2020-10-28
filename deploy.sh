@@ -13,4 +13,4 @@ terraform apply -auto-approve
 echo "\n ========================= \n"
 echo "Waiting for the server"
 sleep 20
-ansible-playbook -i ansible/hosts ansible/vault.yml -v
+ansible-playbook -i ansible/hosts ansible/vault.yml -vv

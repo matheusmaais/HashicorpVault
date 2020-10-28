@@ -2,4 +2,5 @@
 *.tfstate
 terraform.tf*
 *.terraform
-hosts
+hosts*.*
+key*
