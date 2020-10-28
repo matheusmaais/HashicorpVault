@@ -44,11 +44,15 @@
     reboot:
       msg: "Reinicialização iniciada por Ansible"
 
-  - name: Copy Unseal Script
-    copy: src=unseal.sh dest=/etc/vault.d/ 
-  
+  - name: Vault Init
+    shell: vault operator init > /etc/vault.d/key.txt
+    
   - name: Unseal Vault
-    shell: sh /etc/vault.d/unseal.sh  
+    shell: vault operator unseal $(grep '{{ item }}' /etc/vault.d/key.txt | awk '{print $NF}')
+    with_items:
+      - Key 1
+      - Key 2
+      - Key 3
 
   - name: Copy Keys to Local machine
     fetch:
