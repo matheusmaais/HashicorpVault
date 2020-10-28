@@ -59,5 +59,11 @@
       src: /etc/vault.d/key.txt
       dest: .
 
+  # Enable if you want delete key file from server
+  # - name: Remove file (delete file)
+  #   file:
+  #     path: /etc/vault.d/key.txt
+  #     state: absent
+
   
   
